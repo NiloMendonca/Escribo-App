@@ -185,20 +185,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  verificaIcone(lista, index, tipo, listaFavoritos) {
-    for(int i=0; i<listaFavoritos.length; i++){
-      if(tipo == 1) {
-        if (listaFavoritos[i]['nome'] == lista[index]['title'])
-          return Icon(Icons.favorite);
-      }
-      else {
-        if (listaFavoritos[i]['nome'] == lista[index]['name'])
-          return Icon(Icons.favorite);
-      }
-    }
-    return Icon(Icons.favorite_border);
-  }
-
   Widget getTab(int tipo){
     return FutureBuilder(
         future: BancoDeDados().getFavoritos(),
@@ -215,78 +201,77 @@ class _MyHomePageState extends State<MyHomePage> {
             default:
               if (snapshotFavoritos.hasData) {
                 var listaFavoritos = snapshotFavoritos.data;
-                return FutureBuilder(
-                    future: HttpService().getDados(HttpService().getEndpoint(tipo), []),
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        case (ConnectionState.none):
-                        case (ConnectionState.waiting):
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        default:
-                          if (snapshot.hasData) {
-                            var lista = snapshot.data;
-                            return Container(
-                              child: ListView.builder(
-                                itemCount: Util().verificaTamanhoVetor(lista),
-                                itemBuilder: (context, index) {
-                                  return Column(children: <Widget>[
-                                    ListTile(
-                                      title: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            RichText(
-                                              text: TextSpan(
-                                                text: Util().getNome(
-                                                    lista, index, tipo),
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black
-                                                ),
-                                              ),
-                                            ),
-                                            IconButton(
-                                                icon: verificaIcone(
-                                                    lista, index, tipo,
-                                                    listaFavoritos),
-                                                color: Colors.black,
-                                                onPressed: () {
-                                                  setState(() {
-                                                    BancoDeDados().adicionarFavorito(
-                                                        lista, index, tipo);
-                                                  });
-                                                }
-                                            ),
-                                          ]
-                                      ),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 0.0, horizontal: 16.0),
-                                      horizontalTitleGap: 0.0,
-                                      minVerticalPadding: 5.0,
-                                    ),
-                                    Divider(color: Colors.black26, height: 3.0),
-                                  ]);
-                                },
-                              ),
-                            );
-                          } else {
-                            return Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CircularProgressIndicator(),
-                              ),
-                            );
-                          }
-                      }
-                    }
-                );
+                return getItens(tipo, listaFavoritos);
               }
               else {
+                return getItens(tipo, null);
+              }
+          }
+        }
+    );
+  }
+
+  Widget getItens(int tipo, listaFavoritos){
+    return FutureBuilder(
+        future: HttpService().getDados(HttpService().getEndpoint(tipo), []),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case (ConnectionState.none):
+            case (ConnectionState.waiting):
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            default:
+              if (snapshot.hasData) {
+                var lista = snapshot.data;
+                return Container(
+                  child: ListView.builder(
+                    itemCount: Util().verificaTamanhoVetor(lista),
+                    itemBuilder: (context, index) {
+                      return Column(children: <Widget>[
+                        ListTile(
+                          title: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text: Util().getNome(
+                                        lista, index, tipo),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                    icon: verificaIcone(
+                                        lista, index, tipo,
+                                        listaFavoritos),
+                                    color: Colors.black,
+                                    onPressed: () {
+                                      setState(() {
+                                        BancoDeDados().adicionarFavorito(
+                                            lista, index, tipo);
+                                      });
+                                    }
+                                ),
+                              ]
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 0.0, horizontal: 16.0),
+                          horizontalTitleGap: 0.0,
+                          minVerticalPadding: 5.0,
+                        ),
+                        Divider(color: Colors.black26, height: 3.0),
+                      ]);
+                    },
+                  ),
+                );
+              } else {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -297,6 +282,22 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         }
     );
+  }
+
+  verificaIcone(lista, index, tipo, listaFavoritos) {
+    if(listaFavoritos == null)
+      return Icon(Icons.favorite_border);
+    for(int i=0; i<listaFavoritos.length; i++){
+      if(tipo == 1) {
+        if (listaFavoritos[i]['nome'] == lista[index]['title'])
+          return Icon(Icons.favorite);
+      }
+      else {
+        if (listaFavoritos[i]['nome'] == lista[index]['name'])
+          return Icon(Icons.favorite);
+      }
+    }
+    return Icon(Icons.favorite_border);
   }
 
   Widget getBotaoAtualiza(int index){
