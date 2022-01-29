@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttermoji/fluttermoji.dart';
 import '../pages/perfil.dart';
 import '../pages/web.dart';
-import '../pages/main.dart';
+import '../main.dart';
 
 class Menu {
   Widget menu(BuildContext context, bool isHome) {

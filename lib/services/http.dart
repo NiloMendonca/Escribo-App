@@ -23,4 +23,13 @@ class HttpService {
         return res;
     }
   }
+
+  String getEndpoint(int tipo){
+    switch(tipo){
+      case 1:
+        return 'https://swapi.dev/api/films/';
+      default:
+        return 'https://swapi.dev/api/people/';
+    }
+  }
 }
