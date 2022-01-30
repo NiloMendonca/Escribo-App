@@ -25,12 +25,14 @@ class BancoDeDados {
     return [];
   }
 
-  void deletarFavorito(lista, index) async {
+  void deletarFavorito(lista, index, tipo) async {
     if(db == null)
       db = await connectDatabase();
+
     await db
-        .rawDelete('DELETE FROM Favorito WHERE nome = "${getNome(lista, index, 3)}"');
-    List<Map> list = await db.rawQuery('SELECT * FROM Favorito');
+          .rawDelete(
+          'DELETE FROM Favorito WHERE nome = "${getNome(lista, index, tipo)}"');
+      List<Map> list = await db.rawQuery('SELECT * FROM Favorito');
   }
 
   void adicionarFavorito(lista, int index, int tipo) async {
@@ -40,8 +42,7 @@ class BancoDeDados {
     await db.execute(
         "CREATE TABLE IF NOT EXISTS Favorito (nome TEXT PRIMARY KEY, tipo INTEGER)");
 
-
-    await db.transaction((txn) async {
+    var a = await db.transaction((txn) async {
       int id1 = await txn.rawInsert(
           'INSERT INTO Favorito (nome, tipo) VALUES("${getNome(
               lista, index, tipo)}", ${tipo})');

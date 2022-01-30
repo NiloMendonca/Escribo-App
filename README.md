@@ -1,6 +1,6 @@
 # Escribo
 
-Aplicativo desenvolvido em Flutter com o intuito de demonstrar a utilização de algumas bibliotecas do Flutter.
+Aplicativo desenvolvido em Flutter com o intuito de demonstrar a utilização de algumas bibliotecas.
 
 ## Rodando a aplicação
 
